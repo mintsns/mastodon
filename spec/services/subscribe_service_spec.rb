@@ -33,6 +33,11 @@ RSpec.describe SubscribeService do
 
   it 'fails loudly if PuSH hub is unavailable' do
     stub_request(:post, 'http://hub.example.com/').to_return(status: 503)
-    expect { subject.call(account) }.to raise_error
+    expect { subject.call(account) }.to raise_error Mastodon::UnexpectedResponseError
+  end
+
+  it 'fails loudly if rate limited' do
+    stub_request(:post, 'http://hub.example.com/').to_return(status: 429)
+    expect { subject.call(account) }.to raise_error Mastodon::UnexpectedResponseError
   end
 end

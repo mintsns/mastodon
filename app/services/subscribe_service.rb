@@ -2,34 +2,56 @@
 
 class SubscribeService < BaseService
   def call(account)
-    account.secret = SecureRandom.hex
+    return unless account.ostatus?
 
-    subscription = account.subscription(api_subscription_url(account.id))
-    response     = subscription.subscribe
+    @account        = account
+    @account.secret = SecureRandom.hex
+    @response       = build_request.perform
 
-    if response_failed_permanently?(response)
-      # An error in the 4xx range (except for 429, which is rate limiting)
-      # means we're not allowed to subscribe. Fail and move on
-      account.secret = ''
-      account.save!
-    elsif response_successful?(response)
-      # Anything in the 2xx range means the subscription will be confirmed
-      # asynchronously, we've done what we needed to do
-      account.save!
+    if response_failed_permanently?
+      # We're not allowed to subscribe. Fail and move on.
+      @account.secret = ''
+      @account.save!
+    elsif response_successful?
+      # The subscription will be confirmed asynchronously.
+      @account.save!
     else
-      # What's left is the 5xx range and 429, which means we need to retry
-      # at a later time. Fail loudly!
-      raise "Subscription attempt failed for #{account.acct} (#{account.hub_url}): HTTP #{response.code}"
+      # The response was either a 429 rate limit, or a 5xx error.
+      # We need to retry at a later time. Fail loudly!
+      raise Mastodon::UnexpectedResponseError, @response
     end
   end
 
   private
 
-  def response_failed_permanently?(response)
-    response.code > 299 && response.code < 500 && response.code != 429
+  def build_request
+    request = Request.new(:post, @account.hub_url, form: subscription_params)
+    request.on_behalf_of(some_local_account) if some_local_account
+    request
   end
 
-  def response_successful?(response)
-    response.code > 199 && response.code < 300
+  def subscription_params
+    {
+      'hub.topic': @account.remote_url,
+      'hub.mode': 'subscribe',
+      'hub.callback': api_subscription_url(@account.id),
+      'hub.verify': 'async',
+      'hub.secret': @account.secret,
+      'hub.lease_seconds': 7.days.seconds,
+    }
+  end
+
+  def some_local_account
+    @some_local_account ||= Account.local.first
+  end
+
+  # Any response in the 3xx or 4xx range, except for 429 (rate limit)
+  def response_failed_permanently?
+    (@response.status.redirect? || @response.status.client_error?) && !@response.status.too_many_requests?
+  end
+
+  # Any response in the 2xx range
+  def response_successful?
+    @response.status.success?
   end
 end

@@ -10,6 +10,10 @@ nl:
         note: Maximaal 160 tekens
       imports:
         data: CSV-bestand dat op een andere Mastodon-server werd geëxporteerd 
+      sessions:
+        otp: Voer de tweestaps-aanmeldcode vanaf jouw mobiele telefoon in of gebruik een van jouw herstelcode's.        
+      user:
+        filtered_languages: De geselecteerde talen worden uit de lokale en globale tijdlijn verwijderd.        
     labels:
       defaults:
         avatar: Avatar
@@ -19,6 +23,7 @@ nl:
         data: Gegevens
         display_name: Weergavenaam
         email: E-mailadres
+        filtered_languages: Talen filteren
         header: Omslagfoto
         locale: Taal
         locked: Maak account besloten
@@ -32,8 +37,8 @@ nl:
         type: Importtype
         username: gebruikersnaam
       interactions:
-        must_be_follower: Blokkeermeldingen van mensen die jou niet volgen
-        must_be_following: Blokkeermeldingen van mensen die jij niet volgt
+        must_be_follower: Blokkeer meldingen van mensen die jou niet volgen
+        must_be_following: Blokkeer meldingen van mensen die jij niet volgt
       notification_emails:
         digest: Verstuur periodiek e-mails met een samenvatting
         favourite: Verstuur een e-mail wanneer iemand jouw toot als favoriet markeert

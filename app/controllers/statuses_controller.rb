@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class StatusesController < ApplicationController
+  include Authorization
+
   layout 'public'
 
   before_action :set_account
@@ -9,10 +11,22 @@ class StatusesController < ApplicationController
   before_action :check_account_suspension
 
   def show
-    @ancestors   = @status.reply? ? cache_collection(@status.ancestors(current_account), Status) : []
-    @descendants = cache_collection(@status.descendants(current_account), Status)
+    respond_to do |format|
+      format.html do
+        @ancestors   = @status.reply? ? cache_collection(@status.ancestors(current_account), Status) : []
+        @descendants = cache_collection(@status.descendants(current_account), Status)
 
-    render 'stream_entries/show'
+        render 'stream_entries/show'
+      end
+
+      format.json do
+        render json: @status, serializer: ActivityPub::NoteSerializer, adapter: ActivityPub::Adapter
+      end
+    end
+  end
+
+  def activity
+    render json: @status, serializer: ActivityPub::ActivitySerializer, adapter: ActivityPub::Adapter
   end
 
   private
@@ -30,7 +44,10 @@ class StatusesController < ApplicationController
     @stream_entry = @status.stream_entry
     @type         = @stream_entry.activity_type.downcase
 
-    raise ActiveRecord::RecordNotFound unless @status.permitted?(current_account)
+    authorize @status, :show?
+  rescue Mastodon::NotPermittedError
+    # Reraise in order to get a 404
+    raise ActiveRecord::RecordNotFound
   end
 
   def check_account_suspension

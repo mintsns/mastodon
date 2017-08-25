@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 class ProviderDiscovery < OEmbed::ProviderDiscovery
-  extend HttpHelper
-
   class << self
     def discover_provider(url, options = {})
-      res    = http_client.get(url)
+      res    = Request.new(:get, url).perform
       format = options[:format]
 
       raise OEmbed::NotFound, url if res.code != 200 || res.mime_type != 'text/html'
@@ -22,6 +20,7 @@ class ProviderDiscovery < OEmbed::ProviderDiscovery
         format ||= :xml if provider_endpoint
       end
 
+      raise OEmbed::NotFound, url if provider_endpoint.nil?
       begin
         provider_endpoint = Addressable::URI.parse(provider_endpoint)
         provider_endpoint.query = nil
@@ -30,7 +29,7 @@ class ProviderDiscovery < OEmbed::ProviderDiscovery
         raise OEmbed::NotFound, url
       end
 
-      OEmbed::Provider.new(provider_endpoint, format || OEmbed::Formatter.default)
+      OEmbed::Provider.new(provider_endpoint, format)
     end
   end
 end
