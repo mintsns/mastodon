@@ -1,0 +1,85 @@
+version: '2'
+services:
+
+  db:
+    restart: always
+    image: postgres:alpine
+    networks:
+      - internal_network
+    environment:
+      - POSTGRES_PASSWORD=4b2d125d78424de57be
+    volumes:
+      - /mnt/data/oransns/postgres:/var/lib/postgresql/data
+      # - ./postgres:/var/lib/postgresql/data
+
+    # db2:
+    #   restart: always
+    #   image: postgres:alpine
+    #   environment:
+    #     - POSTGRES_PASSWORD=4b2d125d78424de57be
+    #   volumes:
+    #     - /mnt/data/oransns/postgres:/var/lib/postgresql/data
+
+  redis:
+    restart: always
+    image: redis:alpine
+    networks:
+      - internal_network
+    volumes:
+      - /mnt/data/oransns/redis:/data
+
+  web:
+    build: .
+    image: tootsuite/mastodon
+    restart: always
+    env_file: .env.production
+    command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
+    networks:
+      - external_network
+      - internal_network
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - /mnt/data/oransns/mastodon/public/assets:/mastodon/public/assets
+      - /mnt/data/oransns/mastodon/public/packs:/mastodon/public/packs
+      - /mnt/data/oransns/mastodon/public/system:/mastodon/public/system
+
+  streaming:
+    build: .
+    image: tootsuite/mastodon
+    restart: always
+    env_file: .env.production
+    command: yarn start
+    networks:
+      - external_network
+      - internal_network
+    ports:
+      - "127.0.0.1:4000:4000"
+    depends_on:
+      - db
+      - redis
+
+  sidekiq:
+    build: .
+    image: tootsuite/mastodon
+    restart: always
+    env_file: .env.production
+    command: bundle exec sidekiq -q default -q mailers -q pull -q push
+    depends_on:
+      - db
+      - redis
+    networks:
+      - external_network
+      - internal_network
+    volumes:
+      - /mnt/data/oransns/mastodon/public/assets:/mastodon/public/assets
+      - /mnt/data/oransns/mastodon/public/system:/mastodon/public/system
+      - /mnt/data/oransns/mastodon/public/packs:/mastodon/public/packs
+
+networks:
+  external_network:
+  internal_network:
+    internal: true
