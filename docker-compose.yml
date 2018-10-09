@@ -77,6 +77,7 @@ services:
       - internal_network
     volumes:
       - ./public/system:/mastodon/public/system
+      - ./mnt/data/oransns/sidekiq/tmp:/tmp
 ## Uncomment to enable federation with tor instances along with adding the following ENV variables
 ## http_proxy=http://privoxy:8118
 ## ALLOW_ACCESS_TO_HIDDEN_SERVICE=true
