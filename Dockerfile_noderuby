@@ -1,0 +1,25 @@
+FROM node:8.11.3-alpine
+
+LABEL maintainer="https://github.com/tootsuite/mastodon" \
+      description="Your self-hosted, globally interconnected microblogging community"
+
+ARG UID=991
+ARG GID=991
+
+ENV PATH=/mastodon/bin:$PATH \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_ENV=production \
+    NODE_ENV=production
+
+ARG LIBICONV_VERSION=1.15
+ARG LIBICONV_DOWNLOAD_SHA256=ccf536620a45458d26ba83887a983b96827001e92a13847b45e4925cc8913178
+
+EXPOSE 3000 4000
+
+WORKDIR /mastodon
+
+COPY /usr/local/bin/node /usr/local/bin/node
+COPY /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY /usr/local/bin/npm /usr/local/bin/npm
+COPY /opt/yarn-* /opt/yarn
+

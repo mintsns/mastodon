@@ -1,6 +1,9 @@
 FROM node:8.11.3-alpine as node
 FROM ruby:2.4.4-alpine3.6
 
+RUN apk add --update \
+libc6-compat
+
 LABEL maintainer="https://github.com/tootsuite/mastodon" \
       description="Your self-hosted, globally interconnected microblogging community"
 
