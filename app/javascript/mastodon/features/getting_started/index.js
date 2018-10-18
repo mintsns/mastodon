@@ -154,6 +154,7 @@ export default class GettingStarted extends ImmutablePureComponent {
                 defaultMessage='Mastodon is open source software. You can contribute or report issues on GitHub at {github}.'
                 values={{ github: <span><a href='https://github.com/tootsuite/mastodon' rel='noopener' target='_blank'>tootsuite/mastodon</a> (v{version})</span> }}
               />
+              本インスタンスのソースコード: <a href='https://github.com/mintsns/mastodon' target='_blank'>https://github.com/mintsns/mastodon</a>
             </p>
           </div>
         </div>
