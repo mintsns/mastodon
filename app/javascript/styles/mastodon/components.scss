@@ -841,6 +841,193 @@
       }
     }
   }
+
+  // G+ status
+  &.gplus {
+    border-bottom: none;
+    background-color: rgba(239, 239, 239, 1);
+    padding-left: 10px;
+
+    // Link
+    a.u-url, a.status-link {
+      color: #2962ff;
+    }
+
+    // Card
+    .status__card {
+      background-color: white;
+      border-radius: 2px;
+      box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
+      box-sizing: border-box;
+    }
+
+    .status__info {
+      margin-bottom: 30px;
+
+      a.status__relative-time {
+        padding-top: 29px;
+        padding-right: 10px;
+        color: rgb(120,120,120);
+      }
+
+    }
+
+    .status__card__inner {
+      padding: 0px;
+    }
+
+    .status__avatar {
+      left: 20px;
+      top: 20px;
+
+      .account__avatar {
+        cursor: pointer;
+        border-radius: 40px;
+      }
+
+    }
+
+    .status__display-name strong {
+      color: #000;
+      padding-left: 66px;
+      padding-top: 26px;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+
+
+    .status__content.status__content--with-action {
+      color: #000;
+      padding-top: 0;
+      padding-left: 12px;
+    }
+
+    .status__action-bar--wrap {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .status__action-bar {
+      float: right;
+    }
+
+
+    .media-gallery {
+      margin-top: 15px;
+      border-radius: 0;
+      margin-bottom: -20px;
+    }
+
+    .media-gallery__item {
+      border-radius: 0;
+    }
+
+    .status__comment-bar--wrap {
+      border-top: 1px solid rgba(232, 232, 232, 1);
+      margin-left: -10px;
+      margin-right: -10px;
+      margin-top: 20px;
+    }
+
+    .status__comment-bar__icon {
+      margin-left: 10px;
+    }
+
+    .status__comment-bar__icon a {
+      display: block;
+      width: 38px;
+    }
+
+    .status__comment-bar__icon .account__avatar {
+      border-radius: 32px;
+    }
+
+    .status__comment-bar__status__link a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .status__comment-bar__status__link {
+      .display-name__account {
+        color: gray;
+      }
+    }
+
+    .status__comment-bar {
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .status__comment-bar__item {
+      display: flex;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .status__comment-bar__time {
+      color: #a0a0a0;
+      white-space: nowrap;
+      position: absolute;
+      right: 10px;
+      top: 0;
+    }
+
+
+    .status__comment-bar__status {
+      color: black;
+    }
+
+    .status__comment-bar__status .status__content.status__content--with-action {
+      padding-left: 0;
+    }
+
+    .status__comment-bar__status--comment a {
+      color: #2962ff;
+      text-decoration: none;
+    }
+
+    .status__comment-bar--no-comment {
+      border-top: none !important;
+      margin-top: -10px !important;
+    }
+
+    .status__comment-bar__status__link {
+      text-decoration: none;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .status__comment-bar__status__reply-link, .status__comment-bar__status__plusone-link {
+      font-size: 95%;
+      text-decoration: none;
+      display: inline-block;
+      padding: 5px;
+    }
+    .status__comment-bar__status__plusone-link {
+      margin-left: 10px;
+    }
+    .status__comment-bar__status__reply-link:active {
+      color: #2962ff;
+      background-color: #efefef;
+      border-radius: 5px;
+    }
+    .status__comment-bar__status__plusone-link:active {
+      color: #2962ff;
+      background-color: #efefef;
+      border-radius: 13px;
+    }
+    .status__comment-bar__status__plusone-link--selected {
+      color: white;
+      background-color: #d63b30;
+      border-radius: 17px;
+      height: 14px;
+      width: 14px;
+      padding-top: 4px;
+      padding-bottom: 5px;
+      font-weight: 100;
+    }
+  }
+
 }
 
 .notification-favourite {
@@ -856,7 +1043,7 @@
 .status__relative-time {
   color: $dark-text-color;
   float: right;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .status__display-name {
@@ -1814,6 +2001,14 @@ a.account__display-name {
 
   > .scrollable {
     background: $ui-base-color;
+    &.gplus {
+      background: rgba(239, 239, 239, 1);
+
+      .load-more:hover {
+        background: none;
+      }
+
+    }
   }
 }
 

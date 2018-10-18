@@ -26,6 +26,7 @@ import {
   KeyboardShortcuts,
   PublicTimeline,
   CommunityTimeline,
+  GplusCommunityTimeline,
   AccountTimeline,
   AccountGallery,
   HomeTimeline,
@@ -152,6 +153,7 @@ class SwitchingColumnsArea extends React.PureComponent {
           <WrappedRoute path='/timelines/public/media' component={PublicTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll, onlyMedia: true }} />
           <WrappedRoute path='/timelines/public/local' exact component={CommunityTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll }} />
           <WrappedRoute path='/timelines/public/local/media' component={CommunityTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll, onlyMedia: true }} />
+          <WrappedRoute path='/timelines/public/gplus' exact component={GplusCommunityTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll }} />
           <WrappedRoute path='/timelines/direct' component={DirectTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll }} />
           <WrappedRoute path='/timelines/tag/:id' component={HashtagTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll }} />
           <WrappedRoute path='/timelines/list/:id' component={ListTimeline} content={children} componentParams={{ shouldUpdateScroll: this.shouldUpdateScroll }} />

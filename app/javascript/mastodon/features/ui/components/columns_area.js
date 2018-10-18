@@ -12,7 +12,7 @@ import BundleContainer from '../containers/bundle_container';
 import ColumnLoading from './column_loading';
 import DrawerLoading from './drawer_loading';
 import BundleColumnError from './bundle_column_error';
-import { Compose, Notifications, HomeTimeline, CommunityTimeline, PublicTimeline, HashtagTimeline, DirectTimeline, FavouritedStatuses, ListTimeline } from '../../ui/util/async-components';
+import { Compose, Notifications, HomeTimeline, CommunityTimeline, PublicTimeline, HashtagTimeline, DirectTimeline, FavouritedStatuses, ListTimeline, GplusCommunityTimeline } from '../../ui/util/async-components';
 
 import detectPassiveEvents from 'detect-passive-events';
 import { scrollRight } from '../../../scroll';
@@ -23,6 +23,7 @@ const componentMap = {
   'NOTIFICATIONS': Notifications,
   'PUBLIC': PublicTimeline,
   'COMMUNITY': CommunityTimeline,
+  'GPLUS_COMMUNITY': GplusCommunityTimeline,
   'HASHTAG': HashtagTimeline,
   'DIRECT': DirectTimeline,
   'FAVOURITES': FavouritedStatuses,
