@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { List as ImmutableList } from 'immutable';
 import { me } from '../initial_state';
+import Immutable from 'immutable';
 
 const getAccountBase         = (state, id) => state.getIn(['accounts', id], null);
 const getAccountCounters     = (state, id) => state.getIn(['accounts_counters', id], null);
@@ -95,6 +96,98 @@ export const makeGetStatus = () => {
     }
   );
 };
+
+
+const inReplyParentSearch = (state, statuses, id) => {
+  return statuses
+    .filter(status => status.get("in_reply_to_id") === id)
+    .flatMap(status =>
+      Immutable.Seq([
+        [
+          status.get("id"),
+          status.withMutations(map => {
+            map.set(
+              "account",
+              state.getIn(["accounts", status.get("account")])
+            );
+          })
+        ],
+        ...inReplyParentSearch(state, statuses, status.get("id"))
+          .toArray()
+          .map(status => [status.get("id"), status])
+      ])
+    );
+};
+
+export const gplusMakeGetStatus = () => {
+  return createSelector(
+    [
+      (state, { id }) => state.getIn(["statuses", id]),
+      (state, { id }) =>
+        state.getIn(["statuses", state.getIn(["statuses", id, "reblog"])]),
+      (state, { id }) =>
+        state.getIn(["accounts", state.getIn(["statuses", id, "account"])]),
+      (state, { id }) =>
+        state.getIn([
+          "accounts",
+          state.getIn([
+            "statuses",
+            state.getIn(["statuses", id, "reblog"]),
+            "account"
+          ])
+        ]),
+      getFilters,
+      (state, { id }) =>
+        inReplyParentSearch(state, state.get("statuses"), id)
+          .sortBy(status => Number(new Date(status.get("created_at"))))
+          .map(status => {
+            const number = Number(new Date(status.get("created_at")));
+            return status;
+          })
+    ],
+
+    (
+      statusBase,
+      statusReblog,
+      accountBase,
+      accountReblog,
+      filters,
+      comments
+    ) => {
+      if (!statusBase) {
+        return null;
+      }
+
+      if (statusReblog) {
+        statusReblog = statusReblog.set("account", accountReblog);
+      } else {
+        statusReblog = null;
+      }
+
+      const regex =
+        (accountReblog || accountBase).get("id") !== me &&
+        regexFromFilters(filters);
+      const filtered =
+        regex &&
+        regex.test(
+          statusBase.get("reblog")
+            ? statusReblog.get("search_index")
+            : statusBase.get("search_index")
+        );
+      const inReplyToId = statusBase.get("in_reply_to_id");
+
+      return statusBase.withMutations(map => {
+        map.set("reblog", statusReblog);
+        map.set("account", accountBase);
+        map.set("filtered", filtered);
+        map.set("comments", comments);
+        map.set("in_reply_to_id", inReplyToId);
+      });
+    }
+  );
+};
+
+
 
 const getAlertsBase = state => state.get('alerts');
 
