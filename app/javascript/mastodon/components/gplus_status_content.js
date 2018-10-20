@@ -5,6 +5,7 @@ import { isRtl } from '../rtl';
 import { FormattedMessage } from 'react-intl';
 import Permalink from './permalink';
 import classnames from 'classnames';
+import { fetchStatus } from '../actions/statuses';
 
 export default class GplusStatusContent extends React.PureComponent {
 
@@ -13,6 +14,7 @@ export default class GplusStatusContent extends React.PureComponent {
   };
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     status: ImmutablePropTypes.map.isRequired,
     expanded: PropTypes.bool,
     onExpandedToggle: PropTypes.func,
@@ -52,6 +54,12 @@ export default class GplusStatusContent extends React.PureComponent {
 
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener');
+    }
+  }
+
+  componentWillMount () {
+    if (this.props.dispatch !== undefined) {
+      this.props.dispatch(fetchStatus(this.props.status.get('id')));
     }
   }
 
