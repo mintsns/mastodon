@@ -11,6 +11,7 @@ import GplusScrollableList from './gplus_scrollable_list';
 export default class GplusStatusList extends ImmutablePureComponent {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     scrollKey: PropTypes.string.isRequired,
     statusIds: ImmutablePropTypes.list.isRequired,
     featuredStatusIds: ImmutablePropTypes.list,
@@ -107,6 +108,7 @@ export default class GplusStatusList extends ImmutablePureComponent {
           onMoveUp={this.handleMoveUp}
           onMoveDown={this.handleMoveDown}
           contextType={timelineId}
+          dispatch={this.props.dispatch}
         />
       ))
     ) : null;
@@ -120,6 +122,7 @@ export default class GplusStatusList extends ImmutablePureComponent {
           onMoveUp={this.handleMoveUp}
           onMoveDown={this.handleMoveDown}
           contextType={timelineId}
+          dispatch={this.props.dispatch}
         />
       )).concat(scrollableContent);
     }

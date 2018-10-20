@@ -6,6 +6,7 @@ import AvatarOverlay from './avatar_overlay';
 import RelativeTimestamp from './relative_timestamp';
 import DisplayName from './display_name';
 import GplusStatusContent from './gplus_status_content';
+import GplusStatusContainer from '../containers/gplus_status_container';
 import StatusActionBar from './status_action_bar';
 import AttachmentList from './attachment_list';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -13,6 +14,10 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { MediaGallery, Video } from '../features/ui/util/async-components';
 import { HotKeys } from 'react-hotkeys';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { makeGetStatus } from '../selectors';
+import Immutable from 'immutable';
+
 
 // We use the component (and not the container) since we do not want
 // to use the progress bar to show download progress
@@ -43,6 +48,7 @@ export default class GplusStatus extends ImmutablePureComponent {
   };
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     status: ImmutablePropTypes.map,
     account: ImmutablePropTypes.map,
     onReply: PropTypes.func,
@@ -275,7 +281,7 @@ export default class GplusStatus extends ImmutablePureComponent {
       toggleHidden: this.handleHotkeyToggleHidden,
     };
 
-    const comments = status.get('comments');
+    const comments = this.props.status.get('comments');
     const isEmptyComment = comments.size === 0;
 
     let commentItemHtml = [];
@@ -347,7 +353,7 @@ export default class GplusStatus extends ImmutablePureComponent {
                   </a>
                 </div>
 
-                <GplusStatusContent status={status} onClick={this.handleClick} expanded={!status.get('hidden')} onExpandedToggle={this.handleExpandedToggle} />
+                <GplusStatusContent status={status} onClick={this.handleClick} expanded={!status.get('hidden')} onExpandedToggle={this.handleExpandedToggle} dispatch={this.props.dispatch} />
 
                 {media}
 
